@@ -1,0 +1,115 @@
+<div class="container">
+  <br>
+  <h2>List Tickets</h2>
+  <div class="row">
+    <button class="btn btn-outline-success" data-toggle="modal"
+       data-target="#addTicketModal" data-backdrop="static" data-keyboard="false">Buy Ticket</button>
+  </div>
+
+    <!-- Modal -->
+<div class="modal fade" id="addTicketModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Buy Ticket</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="ticketForm">
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="fullname">Fullname</label>
+              <input type="fullname" class="form-control" placeholder="Fullname" formControlName="fullname">
+              <div *ngIf="f['fullname'].touched && f['fullname'].invalid" class="alert alert-danger">
+                  <div *ngIf="f['fullname'].errors && f['fullname'].errors['required']">Fullname is required.</div>
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="ticketType">Ticket Type</label>
+              <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" formControlName="ticketType">
+                <option selected>Choose...</option>
+                <option value="Child">Child</option>
+                <option value="Adult">Adult</option>
+                <option value="Old">Old</option>
+              </select>
+              <div *ngIf="f['ticketType'].touched && f['ticketType'].invalid" class="alert alert-danger">
+                  <div *ngIf="f['ticketType'].errors && f['ticketType'].errors['required']">Fullname is required.</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="price">Price</label>
+            <input type="text" class="form-control" placeholder="enter price" formControlName="price">
+            <div *ngIf="f['price'].touched && f['price'].invalid" class="alert alert-danger">
+              <div *ngIf="f['price'].errors && f['price'].errors['required']">Fullname is required.</div>
+          </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" #closeSaveBtn  class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="ticketForm.invalid">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+  <div></div>
+  <div class="row">
+    <table class="table table-bordered">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Fullname</th>
+          <th scope="col">Ticket Type</th>
+          <th scope="col">Price</th>
+          <th scope="col">Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of ticketList; let i=index">
+            <td>{{i+1}}</td>
+            <td>{{t.fullname}}</td>
+            <td>{{t.ticketType}}</td>
+            <td>{{t.price}}</td>
+            <td *ngIf="!t.expiryDate"><span class="badge badge-success">Valid</span></td>
+            <td *ngIf="t.expiryDate"><span class="badge badge-danger">Expire</span></td>
+            <td>
+              <button type="btn btn-primary" (click)="scanTicket(t.id)"> Scan Ticket</button>&nbsp;
+              <button type="button" class="btn btn-primary" data-toggle="modal"
+                data-target="#viewQrCode" data-backdrop="static" data-keyboard="false"
+                (click)="print(t)">Print Ticket</button>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" #qrModal id="viewQrCode" tabindex="-1" role="dialog" 
+      aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Download Ticket QR</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <qr-code id="qrcode" [value]="selectedTicket"></qr-code>
+      </div>
+      <div class="modal-footer">
+        <button type="button" #closeDownloadBtn class="btn btn-secondary" data-dismiss="modal" (click)="closeQrModal()">Close</button>
+        <button type="button" class="btn btn-primary" (click)="downloadQRCode(qrModal)">Download</button>
+      </div>
+    </div>
+  </div>
+</div>
